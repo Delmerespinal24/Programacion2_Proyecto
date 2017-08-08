@@ -5,16 +5,21 @@
  */
 package alea_evangeli_proyectodelmerizaguirre;
 
-import java.awt.HeadlessException;
+import Pieza.*;
 import javax.swing.JOptionPane;
 
 public class Tablero {
 
-    private final int tam = 19;
-    private char[][] tablero;
+    public static final byte tam = 19;
+    private final char[][] tablero;
+    private Piezas duques;
+    private Piezas rebeldes;
+    private Piezas reyna;
 
     public Tablero() {
         tablero = tablero();
+        duques = new Duques();
+        
 
     }
 
@@ -46,30 +51,46 @@ public class Tablero {
         return tab;
 
     }
-
-    public void ImprimirTablero(int fila, int colum) {
+    //METODO RECURSIVO
+    public void ImprimirTablero(int fila, int colum, char[][] tablero) {
+       
         if (fila == tam - 1 && colum == tam - 1) {
             System.out.println("|" + tablero[fila][colum] + "|");
         } else if (colum == tam - 1) {
             System.out.println("|" + tablero[fila][colum] + "|");
             colum = 0;
             fila++;
-            ImprimirTablero(fila, colum);
+            ImprimirTablero(fila, colum, tablero);
 
         } else {
             System.out.print("|" + tablero[fila][colum]);
             colum++;
-            ImprimirTablero(fila, colum);
+            ImprimirTablero(fila, colum, tablero);
 
         }
 
     }
-
+    
+    public char[][] getTablero(){
+        char[][] tab = tablero;
+        for (int i = 0; i < tam; i++) {
+            for (int j = 0; j < tam; j++) {
+                if(duques.getPosiciones()[i][j]){
+                    tab[i][j] = duques.getFigura();
+                }   
+            }
+            
+        }
+        return tab;
+        
+    }
+    
     public void moverPieza(int x1, int y1, int x2, int y2, char pieza) {
         try {
             if (tablero[x2][y2] == ' ') {
-                tablero[x1][y1] = ' ';
+                
                 tablero[x2][y2] = pieza;
+                tablero[x1][y1] = ' ';
                 
             }else{
                 JOptionPane.showMessageDialog(null, "No puedes mover esta pieza aqui");

@@ -1,19 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Pieza;
 
-/**
- *
- * @author Owner
- */
 public class Rebeldes extends Piezas {
 
     public Rebeldes() {
         super();
-        super.setFigura('•');
+        super.setFigura('⛔');
         LlenarTablero();
 
     }
@@ -73,7 +65,7 @@ public class Rebeldes extends Piezas {
         posiciones[13][16] = true;
         posiciones[13][18] = true;
         posiciones[12][4] = true;
-        posiciones[12][13] = true;
+        posiciones[12][14] = true;
         posiciones[11][3] = true;
         posiciones[11][15] = true;
     }

@@ -9,6 +9,6 @@ package Pieza;
  *
  * @author Owner
  */
-public class Reyna {
+public class Rey {
     
 }

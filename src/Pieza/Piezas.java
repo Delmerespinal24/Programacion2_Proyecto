@@ -50,4 +50,9 @@ public abstract class Piezas {
 
     public abstract void LlenarTablero();
 
+    @Override
+    public String toString() {
+        return "" + figura;
+    }
+
 }

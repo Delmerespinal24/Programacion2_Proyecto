@@ -12,14 +12,14 @@ public class Tablero {
 
     public static final byte tam = 19;
     private final char[][] tablero;
-    private Piezas duques;
-    private Piezas rebeldes;
+    private final Piezas duques;
+    private final Piezas rebeldes;
     private Piezas reyna;
 
     public Tablero() {
         tablero = tablero();
         duques = new Duques();
-        
+        rebeldes = new Rebeldes();
 
     }
 
@@ -51,9 +51,10 @@ public class Tablero {
         return tab;
 
     }
+
     //METODO RECURSIVO
     public void ImprimirTablero(int fila, int colum, char[][] tablero) {
-       
+
         if (fila == tam - 1 && colum == tam - 1) {
             System.out.println("|" + tablero[fila][colum] + "|");
         } else if (colum == tam - 1) {
@@ -70,35 +71,41 @@ public class Tablero {
         }
 
     }
-    
-    public char[][] getTablero(){
+
+    public char[][] getTablero() {
         char[][] tab = tablero;
         for (int i = 0; i < tam; i++) {
             for (int j = 0; j < tam; j++) {
-                if(duques.getPosiciones()[i][j]){
+                if (duques.getPosiciones()[i][j]) {
                     tab[i][j] = duques.getFigura();
-                }   
+                }
+                if(rebeldes.getPosiciones()[i][j]){
+                    tab[i][j] = rebeldes.getFigura();
+                }
             }
-            
+
         }
         return tab;
-        
+
     }
-    
-    public void moverPieza(int x1, int y1, int x2, int y2, char pieza) {
+
+    public void moverDuque(int x1, int y1, int x2, int y2) {
         try {
-            if (tablero[x2][y2] == ' ') {
-                
-                tablero[x2][y2] = pieza;
-                tablero[x1][y1] = ' ';
-                
+            if (duques.getPosiciones()[x1][y1]) {
+                if (!duques.getPosiciones()[x2][y2]) {
+
+                    duques.getPosiciones()[x1][y1] = false;
+                    duques.getPosiciones()[x2][y2] = true;
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "No puedes mover esta pieza aqui");
+                }
             }else{
-                JOptionPane.showMessageDialog(null, "No puedes mover esta pieza aqui");
+                JOptionPane.showMessageDialog(null, "No se puede mover esa pieza");
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Fuera del rango del tablero");
         }
-        
 
     }
 

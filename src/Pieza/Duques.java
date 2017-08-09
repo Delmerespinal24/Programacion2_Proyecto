@@ -19,10 +19,8 @@ public class Duques extends Piezas {
        
     }
     
-    
-    
     @Override
-    public void LlenarTablero() {
+    public final void LlenarTablero() {
         super.posiciones = new boolean[tam][tam];
         for (int i = 0; i < tam; i++) {
             for (int j = 0; j < tam; j++) {
@@ -54,5 +52,7 @@ public class Duques extends Piezas {
         posiciones[14][8] = true;
         posiciones[14][10] = true;
     }
+    
+    
 
 }

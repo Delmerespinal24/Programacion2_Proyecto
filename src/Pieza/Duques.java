@@ -44,6 +44,10 @@ public class Duques extends Piezas {
         posiciones[14][10] = true;
     }
     
+    @Override
+    public String toString() {
+        return "Duques";
+    }
     
 
 }

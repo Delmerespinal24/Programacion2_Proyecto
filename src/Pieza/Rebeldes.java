@@ -70,4 +70,10 @@ public class Rebeldes extends Piezas {
         posiciones[11][15] = true;
     }
 
+    @Override
+    public String toString() {
+        return "Rebeldes";
+    }
+
+    
 }

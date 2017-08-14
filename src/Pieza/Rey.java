@@ -28,6 +28,11 @@ public class Rey extends Piezas {
             }
         }
         posiciones[x][y] = true;
+        posiciones[8][9] = true;
+        posiciones[10][9] = true;
+        posiciones[9][8] = true;
+        posiciones[9][10] = true;
+       
         
     }
 
@@ -45,6 +50,16 @@ public class Rey extends Piezas {
 
     public void setY(int y) {
         this.y = y;
+    }
+    
+    public char getSirviente(){
+        return 'ⓞ';
+        
+    }
+    
+    public boolean IsLife(){
+        return posiciones[x][y];
+        
     }
         
     @Override

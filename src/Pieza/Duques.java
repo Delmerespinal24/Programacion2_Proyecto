@@ -24,17 +24,13 @@ public class Duques extends Piezas {
         posiciones[7][8] = true;
         posiciones[7][10] = true;
         posiciones[8][7] = true;
-        posiciones[8][9] = true;
         posiciones[8][11] = true;
         posiciones[8][4] = true;
         posiciones[8][14] = true;
         posiciones[9][6] = true;
-        posiciones[9][8] = true;
-        posiciones[9][10] = true;
         posiciones[9][12] = true;
         posiciones[10][4] = true;
         posiciones[10][7] = true;
-        posiciones[10][9] = true;
         posiciones[10][11] = true;
         posiciones[10][14] = true;
         posiciones[11][8] = true;

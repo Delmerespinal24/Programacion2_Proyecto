@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 public class Alea_Evangeli_ProyectoDelmerIzaguirre {
 
     public static void main(String[] args) {
+        
         Tablero tab = new Tablero();
         int cont = 0;
         while (true) {
@@ -27,16 +28,19 @@ public class Alea_Evangeli_ProyectoDelmerIzaguirre {
                 int y2 = JOptionPane.showInputDialog("Y2")
                         .toUpperCase().charAt(0) - 65;
                 
-           // if (cont % 2 == 0) {
+                if (cont % 2 == 0) {
         
-           //     tab.moverRebelde(x1, y1, x2, y2);
-           // } else {
+                tab.moverRebelde(x1, y1, x2, y2);
+            } else {
 
                 tab.moverDuque(x1, y1, x2, y2);
                
-           //}
+          }
         }
 
+    }
+
+    public Alea_Evangeli_ProyectoDelmerIzaguirre() {
     }
 
 }

@@ -21,7 +21,6 @@ public class Tablero {
         duques = new Duques();
         rebeldes = new Rebeldes();
         rey = new Rey();
-        tablero = getTablero();
 
     }
 
@@ -41,12 +40,24 @@ public class Tablero {
         return rey;
     }
 
-    private char[][] getTablero() {
+    private void iterarTablero() {
+
         for (int i = 0; i < tam; i++) {
             for (int j = 0; j < tam; j++) {
-                tablero[i][j] = 'ᅚ';
+                if (duques.getPosiciones()[i][j]) {
+                    tablero[i][j] = duques.getFigura();
+                } else if (rebeldes.getPosiciones()[i][j]) {
+                    tablero[i][j] = rebeldes.getFigura();
+                } else if (rey.getPosiciones()[i][j]) {
+                    tablero[i][j] = ((Rey) rey).getSirviente();
+                } else {
+                    tablero[i][j] = 'ᅚ';
+                }
+
             }
+
         }
+
         char X = '╳';
         tablero[0][0] = X;
         tablero[0][1] = X;
@@ -66,36 +77,22 @@ public class Tablero {
         tablero[tam - 1][tam - 2] = X;
         tablero[tam / 2][tam / 2] = X;
 
-        for (int i = 0; i < tam; i++) {
-            for (int j = 0; j < tam; j++) {
-                if (duques.getPosiciones()[i][j]) {
-                    tablero[i][j] = duques.getFigura();
-                }
-                if (rebeldes.getPosiciones()[i][j]) {
-                    tablero[i][j] = rebeldes.getFigura();
-                }
-                if (rey.getPosiciones()[i][j]) {
-                    tablero[i][j] = rey.getFigura();
-                }
-
-            }
-
+        if (((Rey) rey).IsLife()) {
+            tablero[((Rey) rey).getX()][((Rey) rey).getY()] = rey.getFigura();
         }
-
-        return tablero;
 
     }
 
     //METODO RECURSIVO
     public void ImprimirTablero(int fila, int colum) {
-        char[][] tab = getTablero();
+        iterarTablero();
         if (fila == tam - 1 && colum == tam - 1) {
 
-            System.out.println("|" + tab[fila][colum] + "| ");
+            System.out.println("|" + tablero[fila][colum] + "| ");
             System.out.println("   AᅚBᅚCᅚDᅚEᅚFᅚGᅚHᅚIᅚJᅚKᅚLᅚMᅚNᅚOᅚPᅚQᅚRᅚS\n");
 
         } else if (colum == tam - 1) {
-            System.out.println("|" + tab[fila][colum] + "| ");
+            System.out.println("|" + tablero[fila][colum] + "| ");
             colum = 0;
             fila++;
             ImprimirTablero(fila, colum);
@@ -106,7 +103,7 @@ public class Tablero {
             } else if (colum == 0 && fila > 9) {
                 System.out.print(fila);
             }
-            System.out.print("|" + tab[fila][colum]);
+            System.out.print("|" + tablero[fila][colum]);
             colum++;
             ImprimirTablero(fila, colum);
 
@@ -131,10 +128,17 @@ public class Tablero {
             } else if (rey.getPosiciones()[x1][y1]) {
                 if (!(x2 == 9 && y2 == 9) && (x1 != x2 || y1 != y2)) {
 
-                    Mover(x1, y1, x2, y2, rey);
-                    ((Rey) rey).setX(x2);
-                    ((Rey) rey).setY(y2);
+                    if (x1 == ((Rey) rey).getX() && y1 == ((Rey) rey).getY()) {
+                        if (Mover(x1, y1, x2, y2, rey)) {
 
+                            ((Rey) rey).setX(x2);
+                            ((Rey) rey).setY(y2);
+                        }
+                    } else if(tablero[x2][y2] != '╳'){
+                        Mover(x1, y1, x2, y2, rey);
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Solo el rey puede estar en una X");
+                    }
                     Captura(duques, rebeldes, x2, y2);
 
                 } else {
@@ -170,7 +174,7 @@ public class Tablero {
 
     }
 
-    public void Mover(int x1, int y1, int x2, int y2, Piezas pieza) {
+    public boolean Mover(int x1, int y1, int x2, int y2, Piezas pieza) {
         boolean posible = true;
         if (x1 == x2) { //Movimiento horizontal
             if (y2 > y1) {//Derecha
@@ -216,9 +220,11 @@ public class Tablero {
             }
 
         } else {
+            posible = false;
             JOptionPane.showMessageDialog(null, "Las piezas solo se pueden mover vertical u horizontalmente");
 
         }
+        return posible;
 
     }
 
@@ -256,47 +262,50 @@ public class Tablero {
 
     private void JaqueMate() {
 
-        int x = ((Rey)rey).getX();
-        int y = ((Rey)rey).getY();
-              
+        int x = ((Rey) rey).getX();
+        int y = ((Rey) rey).getY();
+
         boolean up = false;
         boolean down = false;
         boolean left = false;
         boolean right = false;
-        
+
         try {
             up = rebeldes.getPosiciones()[x - 1][y];
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         try {
             down = rebeldes.getPosiciones()[x + 1][y];
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         try {
             right = rebeldes.getPosiciones()[x][y + 1];
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         try {
             left = rebeldes.getPosiciones()[x][y - 1];
-        } catch (Exception e) {}
-        
-        if(x == 0){
+        } catch (Exception e) {
+        }
+
+        if (x == 0) {
             up = true;
         }
-        if(x == tam-1){
+        if (x == tam - 1) {
             down = true;
         }
-        if(y == tam-1){
+        if (y == tam - 1) {
             right = true;
         }
-        if(y == 0){
+        if (y == 0) {
             left = true;
         }
-      
+
         //Termina el juego
-        if(up && down && left && right){
+        if (up && down && left && right) {
             rey.getPosiciones()[x][y] = false;
         }
-        
+
     }
-  
 
     @Override
     public String toString() {

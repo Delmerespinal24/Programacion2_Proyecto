@@ -68,6 +68,8 @@ public class Rebeldes extends Piezas {
         posiciones[12][14] = true;
         posiciones[11][3] = true;
         posiciones[11][15] = true;
+      
+        
     }
 
     @Override

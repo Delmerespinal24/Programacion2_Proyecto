@@ -5,7 +5,7 @@ public class Duques extends Piezas {
     
     public Duques() {
         super();
-        super.setFigura('Ⓞ');
+        super.setFigura('ⓞ');
         LlenarTablero();
        
     }
@@ -18,6 +18,7 @@ public class Duques extends Piezas {
                 posiciones[i][j] = false;
             }
         }
+        
         posiciones[4][8] = true;
         posiciones[4][10] = true;
         posiciones[6][9] = true;
@@ -38,6 +39,7 @@ public class Duques extends Piezas {
         posiciones[12][9] = true;
         posiciones[14][8] = true;
         posiciones[14][10] = true;
+        
     }
     
     @Override

@@ -32,6 +32,7 @@ public class Rey extends Piezas {
         posiciones[10][9] = true;
         posiciones[9][8] = true;
         posiciones[9][10] = true;
+         
        
         
     }
@@ -53,7 +54,7 @@ public class Rey extends Piezas {
     }
     
     public char getSirviente(){
-        return 'ⓞ';
+        return 'Ⓞ';
         
     }
     

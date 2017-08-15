@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 
 public class Tablero {
 
+    boolean runGame = true;
     public static final byte tam = 19;
     private char[][] tablero = new char[tam][tam];
     private final Piezas duques;
@@ -85,7 +86,9 @@ public class Tablero {
 
     //METODO RECURSIVO
     public void ImprimirTablero(int fila, int colum) {
-        iterarTablero();
+        if (fila == 0 && colum == 0) {
+            iterarTablero();
+        }
         if (fila == tam - 1 && colum == tam - 1) {
 
             System.out.println("|" + tablero[fila][colum] + "| ");
@@ -111,57 +114,58 @@ public class Tablero {
 
     }
 
-    public void moverDuque(int x1, int y1, int x2, int y2) {
+    private boolean[][] unirMatrices() {
+        boolean[][] matriz = new boolean[tam][tam];
+        for (int i = 0; i < tam; i++) {
+            for (int j = 0; j < tam; j++) {
+                matriz[i][j] = duques.getPosiciones()[i][j] || rey.getPosiciones()[i][j];
+            }
+        }
+        return matriz;
+
+    }
+
+    public boolean moverDuque(int x1, int y1, int x2, int y2) {//Un boolean para saber si el movimiento se efectuo
+
+        boolean mover = false;
         try {
             if (duques.getPosiciones()[x1][y1]) {
                 if (tablero[x2][y2] != '╳' && (x1 != x2 || y1 != y2)) {
 
-                    Mover(x1, y1, x2, y2, duques);
-
-                    duques.getPosiciones()[((Rey) rey).getX()][((Rey) rey).getY()] = true;
-                    Captura(duques, rebeldes, x2, y2);
-                    duques.getPosiciones()[((Rey) rey).getX()][((Rey) rey).getY()] = false;
-
-                } else {
-                    JOptionPane.showMessageDialog(null, "No puedes mover esta pieza aqui");
-                }
-            } else if (rey.getPosiciones()[x1][y1]) {
-                if (!(x2 == 9 && y2 == 9) && (x1 != x2 || y1 != y2)) {
-
-                    if (x1 == ((Rey) rey).getX() && y1 == ((Rey) rey).getY()) {
-                        if (Mover(x1, y1, x2, y2, rey)) {
-
-                            ((Rey) rey).setX(x2);
-                            ((Rey) rey).setY(y2);
-                        }
-                    } else if(tablero[x2][y2] != '╳'){
-                        Mover(x1, y1, x2, y2, rey);
-                    }else{
-                        JOptionPane.showMessageDialog(null, "Solo el rey puede estar en una X");
+                    if (Mover(x1, y1, x2, y2, duques)) {
+                        mover = true;
+                        Captura(unirMatrices(), rebeldes, x2, y2);
                     }
-                    Captura(duques, rebeldes, x2, y2);
 
                 } else {
                     JOptionPane.showMessageDialog(null, "No puedes mover esta pieza aqui");
                 }
+            } else if (rey.getPosiciones()[x1][y1]) {   // Mover el rey
+                mover = moverRey(x1, y1, x2, y2);
+
             } else {
                 JOptionPane.showMessageDialog(null, "No hay ningun duque o rey en esta posicion");
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Fuera del rango del tablero");
         }
+        return mover;
 
     }
 
-    public void moverRebelde(int x1, int y1, int x2, int y2) {
+    public boolean moverRebelde(int x1, int y1, int x2, int y2) {
+
+        boolean mover = false;
         try {
             if (rebeldes.getPosiciones()[x1][y1]) {
                 if (tablero[x2][y2] != '╳' && (x1 != x2 || y1 != y2)) {
 
-                    Mover(x1, y1, x2, y2, rebeldes);
-                    Captura(rebeldes, duques, x2, y2);
-                    JaqueMate();
-
+                    if (Mover(x1, y1, x2, y2, rebeldes)) {
+                        mover = true;
+                        Captura(rebeldes.getPosiciones(), duques, x2, y2);
+                        JaqueMate();
+                    }
+                    
                 } else {
                     JOptionPane.showMessageDialog(null, "No puedes mover esta pieza aqui");
                 }
@@ -171,7 +175,41 @@ public class Tablero {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Fuera del rango del tablero");
         }
+        return mover;
+    }
 
+    private boolean moverRey(int x1, int y1, int x2, int y2) {
+
+        boolean mover = false;
+        if (!(x2 == 9 && y2 == 9) && (x1 != x2 || y1 != y2)) {
+
+            if (x1 == ((Rey) rey).getX() && y1 == ((Rey) rey).getY()) {
+                if (Mover(x1, y1, x2, y2, rey)) {
+
+                    ((Rey) rey).setX(x2);
+                    ((Rey) rey).setY(y2);
+                    mover = true;
+                    if (tablero[((Rey) rey).getX()][((Rey) rey).getY()] == '╳') {
+
+                        ImprimirTablero(0, 0);
+                        JOptionPane.showMessageDialog(null, "El rey ha llegado a la x"
+                                + "\nEl rey y los duques han ganado!");
+                        runGame = false;
+                    }
+
+                }
+            } else if (tablero[x2][y2] != '╳') { // Movimiento del los duques al lado del rey
+                mover = Mover(x1, y1, x2, y2, rey);
+            } else {
+                JOptionPane.showMessageDialog(null, "Solo el rey puede estar en una X");
+            }
+            if (mover) {
+                Captura(unirMatrices(), rebeldes, x2, y2);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No puedes mover esta pieza aqui");
+        }
+        return mover;
     }
 
     public boolean Mover(int x1, int y1, int x2, int y2, Piezas pieza) {
@@ -232,28 +270,29 @@ public class Tablero {
         return rey.getPosiciones()[x][y] || rebeldes.getPosiciones()[x][y] || duques.getPosiciones()[x][y];
     }
 
-    private void Captura(Piezas amiga, Piezas capturada, int x, int y) {
+    private void Captura(boolean[][] amiga, Piezas capturada, int x, int y) {
         //hacia arriba
+
         if (x >= 2) {
-            if (amiga.getPosiciones()[x - 2][y]) {
+            if (amiga[x - 2][y]) {
                 capturada.getPosiciones()[x - 1][y] = false;
             }
         }
         //hacia abajo
         if (x <= tam - 3) {
-            if (amiga.getPosiciones()[x + 2][y]) {
+            if (amiga[x + 2][y]) {
                 capturada.getPosiciones()[x + 1][y] = false;
             }
         }
         //hacia la izquierda
         if (y >= 2) {
-            if (amiga.getPosiciones()[x][y - 2]) {
+            if (amiga[x][y - 2]) {
                 capturada.getPosiciones()[x][y - 1] = false;
             }
         }
         //hacia la derecha
         if (y <= tam - 3) {
-            if (amiga.getPosiciones()[x][y + 2]) {
+            if (amiga[x][y + 2]) {
                 capturada.getPosiciones()[x][y + 1] = false;
             }
         }
@@ -299,10 +338,37 @@ public class Tablero {
         if (y == 0) {
             left = true;
         }
+        
+        try {
+            if(tablero[x-1][y] == '╳')
+                up = true;
+        } catch (Exception ex) {
+        }
+        try {
+            if(tablero[x+1][y] == '╳')
+                down = true;
+        } catch (Exception ex) {
+        }
+        try {
+            if(tablero[x][y+1] == '╳')
+                right = true;
+        } catch (Exception ex) {
+        }
+        try {
+            if(tablero[x][y-1] == '╳')
+                left = true;
+        } catch (Exception ex) {
+        }
+        
 
         //Termina el juego
         if (up && down && left && right) {
             rey.getPosiciones()[x][y] = false;
+
+            ImprimirTablero(0, 0);
+            JOptionPane.showMessageDialog(null, "El rey ha sido capturado\n"
+                    + "Los rebeldes han ganado!");
+            runGame = false;
         }
 
     }
